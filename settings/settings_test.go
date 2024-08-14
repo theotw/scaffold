@@ -45,6 +45,10 @@ func (s *testSettingsSource) TestEnvSettings() {
 }
 
 func (s *testSettingsSource) TestEnvAndSecretsSettings() {
+	integrationRun := os.Getenv("INTEGRATION_TEST")
+	if integrationRun != "true" {
+		s.T().Skip("Skipping integration test")
+	}
 	pwd, _ := os.Getwd()
 	envFileName := path.Join(pwd, "testdata", "test2.env")
 	_, err := os.Stat(envFileName)
