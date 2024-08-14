@@ -32,6 +32,7 @@ jobs:
           DATE: ${{ env.date }}
         run: |
           TAG="v${VERSION}.${DATE}"
+          echo "TAG=$TAG" >> $GITHUB_ENV
           echo "Creating tag $TAG"
           git tag $TAG
           git push origin $TAG
