@@ -45,10 +45,14 @@ func NewEnvSettingsSource[t any](prefix string, fileName string) *EnvSettingsSou
 func (f *EnvSettingsSource[t]) InitSettings() error {
 	log := logger.NewLogger(context.Background(), "settings")
 
-	if err := godotenv.Load(f.fileName); err != nil {
-		return errorutils.WrapIfNotNil("error loading settings file "+f.fileName, err)
+	if f.fileName != "" {
+		if err := godotenv.Load(f.fileName); err != nil {
+			return errorutils.WrapIfNotNil("error loading settings file "+f.fileName, err)
+		} else {
+			log.Debugf("Loaded settings from %s", f.fileName)
+		}
 	} else {
-		log.Debugf("Loaded settings from %s", f.fileName)
+		log.Infof("No settings file provided, using only env and secrets")
 	}
 
 	mapFromEnv := f.readSettingsFromEnv()
