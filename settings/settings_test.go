@@ -43,6 +43,25 @@ func (s *testSettingsSource) TestEnvSettings() {
 	s.Assert().Equal("item2", settings.GetSettings().Item2)
 	s.Assert().Equal("item3", settings.GetSettings().Item3)
 }
+func (s *testSettingsSource) TestEnvSettingsNoPrefix() {
+	pwd, _ := os.Getwd()
+	envFileName := path.Join(pwd, "testdata", "test3.env")
+	_, err := os.Stat(envFileName)
+	s.Require().NoError(err)
+	settings := NewEnvSettingsSource[testSettings]("", envFileName)
+	err = settings.InitSettings()
+	s.Require().NoError(err)
+	s.Require().NoError(err)
+	s.Require().NotNil(settings.GetSettings())
+	s.Assert().Equal("item1", settings.GetItem("item_1"))
+	s.Assert().Equal("item2", settings.GetItem("item_2"))
+	s.Assert().Equal("item3", settings.GetItem("item_3"))
+	s.Assert().Equal("item4", settings.GetItem("item_4"))
+
+	s.Assert().Equal("item1", settings.GetSettings().Item1)
+	s.Assert().Equal("item2", settings.GetSettings().Item2)
+	s.Assert().Equal("item3", settings.GetSettings().Item3)
+}
 
 func (s *testSettingsSource) TestEnvAndSecretsSettings() {
 	integrationRun := os.Getenv("INTEGRATION_TEST")
